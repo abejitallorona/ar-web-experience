@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>En tu mesa · AR Combo</title>
+  <link rel="icon" href="img/icon.png">
+  <link rel="stylesheet" href="style.css">
+  <!-- model-viewer 3.5.0 (copia local) -->
+  <script type="module" src="lib/model-viewer.min.js"></script>
+</head>
+<body>
+  <div class="viewer">
+    <header class="bar">
+      <a class="back cut" href="index.html">‹ Inicio</a>
+      <label class="switch"><input type="checkbox" id="labels"><span class="track cut"><span class="knob"></span></span>Nombres</label>
+    </header>
+
+    <!--
+      Mismo modelo en las tres experiencias: models/McDonalds_AR_Combo.glb (escala real, la bandeja mide 46 cm).
+      ios-src: versión USDZ para Quick Look en iPhone/iPad.
+    -->
+    <model-viewer id="combo"
+      src="models/McDonalds_AR_Combo.glb" ios-src="models/McDonalds_AR_Combo.usdz" poster="img/poster.png"
+      alt="Bandeja low poly con hamburguesa en su caja abierta, papas regadas, bebida, nuggets, ketchup y un robot-lata manejado por un gato"
+      ar ar-modes="webxr scene-viewer quick-look" ar-placement="floor" ar-scale="auto"
+      camera-controls touch-action="pan-y" interaction-prompt="auto"
+      camera-orbit="20deg 60deg auto" min-camera-orbit="auto 12deg auto" max-camera-orbit="auto 88deg auto"
+      environment-image="neutral" exposure="0.9" tone-mapping="aces" shadow-intensity="0.9" shadow-softness="0.7"
+      interpolation-decay="160" autoplay>
+
+      <button class="hotspot" slot="hotspot-burger" data-key="burger" data-position="-0.11 0.15 0.03" data-normal="0 1 0"><span class="dot"></span><span class="tip">Hamburguesa en su caja</span></button>
+      <button class="hotspot" slot="hotspot-fries" data-key="fries" data-position="0.066 0.07 0.015" data-normal="0 1 0"><span class="dot"></span><span class="tip">Papas regadas</span></button>
+      <button class="hotspot" slot="hotspot-drink" data-key="drink" data-position="0.168 0.24 -0.092" data-normal="0 1 0"><span class="dot"></span><span class="tip">Bebida</span></button>
+      <button class="hotspot" slot="hotspot-nuggets" data-key="nuggets" data-position="0.01 0.055 -0.118" data-normal="0 1 0"><span class="dot"></span><span class="tip">Cajita de nuggets</span></button>
+      <button class="hotspot" slot="hotspot-ketchup" data-key="ketchup" data-position="0.1 0.025 0.115" data-normal="0 1 0"><span class="dot"></span><span class="tip">Nugget mordido y ketchup</span></button>
+      <button class="hotspot" slot="hotspot-toy" data-key="toy" data-position="-0.072 0.118 -0.112" data-normal="0 1 0"><span class="dot"></span><span class="tip">Robot sorpresa y su piloto gatuno</span></button>
+
+      <button slot="ar-button" class="btn cut ar-btn"><span class="gem"></span>Ver en mi espacio</button>
+    </model-viewer>
+
+    <div class="dock">
+      <div class="chips" role="group" aria-label="Acercar a un producto">
+        <button class="chip cut" data-go="all" aria-pressed="true">Toda la bandeja</button>
+        <button class="chip cut" data-go="burger" aria-pressed="false">Hamburguesa</button>
+        <button class="chip cut" data-go="fries" aria-pressed="false">Papas</button>
+        <button class="chip cut" data-go="nuggets" aria-pressed="false">Nuggets</button>
+        <button class="chip cut" data-go="ketchup" aria-pressed="false">Ketchup</button>
+        <button class="chip cut" data-go="drink" aria-pressed="false">Bebida</button>
+        <button class="chip cut" data-go="toy" aria-pressed="false">Robot sorpresa</button>
+      </div>
+      <p class="status" id="status">Cargando la bandeja…</p>
+    </div>
+  </div>
+
+  <script>
+    const mv = document.getElementById('combo');
+    const status = document.getElementById('status');
+    const chips = [...document.querySelectorAll('.chip')];
+    const spots = Object.fromEntries([...document.querySelectorAll('.hotspot')].map(h => [h.dataset.key, h]));
+    const views = { // cámara para cada producto
+      all: { target: 'auto auto auto', orbit: '20deg 60deg auto' },
+      burger: { orbit: '15deg 58deg 0.42m' }, fries: { orbit: '-10deg 52deg 0.40m' }, drink: { orbit: '35deg 70deg 0.5m' },
+      nuggets: { orbit: '0deg 50deg 0.38m' }, ketchup: { orbit: '20deg 48deg 0.34m' }, toy: { orbit: '28deg 72deg 0.24m' }
+    };
+
+    function go(key) {
+      chips.forEach(c => c.setAttribute('aria-pressed', String(c.dataset.go === key)));
+      Object.values(spots).forEach(s => s.classList.toggle('active', s.dataset.key === key));
+      const v = views[key];
+      mv.cameraTarget = key === 'all' ? v.target : spots[key].dataset.position.split(' ').map(n => n + 'm').join(' ');
+      // en pantallas verticales la cámara se aleja un poco más
+      const k = innerWidth < innerHeight ? 1.8 : 1;
+      mv.cameraOrbit = v.orbit.replace(/([\d.]+)m$/, (_, r) => (parseFloat(r) * k).toFixed(2) + 'm');
+    }
+    chips.forEach(c => c.addEventListener('click', () => go(c.dataset.go)));
+    Object.values(spots).forEach(s => s.addEventListener('click', () => go(s.dataset.key)));
+
+    document.getElementById('labels').addEventListener('change', e => mv.classList.toggle('labels-on', e.target.checked));
+
+    mv.addEventListener('load', () => {
+      status.textContent = mv.canActivateAR
+        ? 'Toca "Ver en mi espacio" y apunta a una mesa o al piso.'
+        : 'Toca un producto para acercarte. Para verla en tu mesa, abre esta página en un celular Android con ARCore o en un iPhone.';
+      Object.values(spots).forEach(s => s.classList.add('pulse'));
+    });
+    mv.addEventListener('error', () => { status.textContent = 'No se pudo cargar el modelo. Revisa que la carpeta models/ esté junto a esta página.'; });
+    mv.addEventListener('ar-status', e => {
+      if (e.detail.status === 'failed') status.textContent = 'Este navegador no pudo abrir la cámara en AR. Prueba con Chrome en Android o Safari en iPhone.';
+    });
+  </script>
+</body>
+</html>
