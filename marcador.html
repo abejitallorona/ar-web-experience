@@ -19,29 +19,29 @@
 </head>
 <body class="cam">
   <div class="intro" id="intro">
-    <div class="card cut">
+    <div class="card">
       <h1>Apunta a un marcador</h1>
       <p>Imprime uno de los dos marcadores o ábrelo en otra pantalla. Cuando la cámara lo vea, la bandeja aparece encima.</p>
       <div class="markers">
         <figure><img src="data/hiro.png" alt="Marcador Hiro">Hiro</figure>
         <figure><img src="data/marcador_combo.png" alt="Marcador Combo">Combo</figure>
       </div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn cut" id="go"><span class="gem"></span>Abrir cámara</button>
-        <a class="btn ghost cut" href="data/marcadores_imprimir.pdf" target="_blank">Imprimir</a>
+      <div class="row">
+        <button class="btn" id="go">Abrir cámara</button>
+        <a class="btn line" href="data/marcadores_imprimir.pdf" target="_blank">Imprimir</a>
       </div>
     </div>
   </div>
 
   <div class="cam-ui" id="ui">
-    <header class="bar"><a class="back cut" href="index.html">‹ Inicio</a></header>
+    <header class="bar"><a class="back" href="index.html">‹ Inicio</a></header>
     <div class="reticle" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-    <div class="pill cut" id="status" role="status">Buscando el marcador…</div>
+    <div class="pill" id="status" role="status">Buscando el marcador…</div>
   </div>
 
   <!-- Dos marcadores a la vez: Hiro (clásico) y el marcador propio "Combo" (data/patt.combo). Rutas locales en data/. -->
   <a-scene embedded vr-mode-ui="enabled: false"
-    loading-screen="dotsColor: #F2B731; backgroundColor: #F2EEE9"
+    loading-screen="dotsColor: #FFC72C; backgroundColor: #F5F3EE"
     renderer="logarithmicDepthBuffer: true; colorManagement: true; antialias: true"
     arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: false; cameraParametersUrl: data/camera_para.dat; patternRatio: 0.5">
     <a-assets timeout="20000"><a-asset-item id="combo" src="models/McDonalds_AR_Combo.glb"></a-asset-item></a-assets>

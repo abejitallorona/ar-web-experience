@@ -12,8 +12,8 @@
 <body>
   <div class="viewer">
     <header class="bar">
-      <a class="back cut" href="index.html">‹ Inicio</a>
-      <label class="switch"><input type="checkbox" id="labels"><span class="track cut"><span class="knob"></span></span>Nombres</label>
+      <a class="back" href="index.html">‹ Inicio</a>
+      <label class="switch"><input type="checkbox" id="labels"><span class="track"><span class="knob"></span></span>Nombres</label>
     </header>
 
     <!--
@@ -36,18 +36,18 @@
       <button class="hotspot" slot="hotspot-ketchup" data-key="ketchup" data-position="0.1 0.025 0.115" data-normal="0 1 0"><span class="dot"></span><span class="tip">Nugget mordido y ketchup</span></button>
       <button class="hotspot" slot="hotspot-toy" data-key="toy" data-position="-0.072 0.118 -0.112" data-normal="0 1 0"><span class="dot"></span><span class="tip">Robot sorpresa y su piloto gatuno</span></button>
 
-      <button slot="ar-button" class="btn cut ar-btn"><span class="gem"></span>Ver en mi espacio</button>
+      <button slot="ar-button" class="btn ar-btn">Ver en mi espacio</button>
     </model-viewer>
 
     <div class="dock">
       <div class="chips" role="group" aria-label="Acercar a un producto">
-        <button class="chip cut" data-go="all" aria-pressed="true">Toda la bandeja</button>
-        <button class="chip cut" data-go="burger" aria-pressed="false">Hamburguesa</button>
-        <button class="chip cut" data-go="fries" aria-pressed="false">Papas</button>
-        <button class="chip cut" data-go="nuggets" aria-pressed="false">Nuggets</button>
-        <button class="chip cut" data-go="ketchup" aria-pressed="false">Ketchup</button>
-        <button class="chip cut" data-go="drink" aria-pressed="false">Bebida</button>
-        <button class="chip cut" data-go="toy" aria-pressed="false">Robot sorpresa</button>
+        <button class="chip" data-go="all" aria-pressed="true">Toda la bandeja</button>
+        <button class="chip" data-go="burger" aria-pressed="false">Hamburguesa</button>
+        <button class="chip" data-go="fries" aria-pressed="false">Papas</button>
+        <button class="chip" data-go="nuggets" aria-pressed="false">Nuggets</button>
+        <button class="chip" data-go="ketchup" aria-pressed="false">Ketchup</button>
+        <button class="chip" data-go="drink" aria-pressed="false">Bebida</button>
+        <button class="chip" data-go="toy" aria-pressed="false">Robot sorpresa</button>
       </div>
       <p class="status" id="status">Cargando la bandeja…</p>
     </div>
@@ -82,8 +82,7 @@
       status.textContent = mv.canActivateAR
         ? 'Toca "Ver en mi espacio" y apunta a una mesa o al piso.'
         : 'Toca un producto para acercarte. Para verla en tu mesa, abre esta página en un celular Android con ARCore o en un iPhone.';
-      Object.values(spots).forEach(s => s.classList.add('pulse'));
-    });
+          });
     mv.addEventListener('error', () => { status.textContent = 'No se pudo cargar el modelo. Revisa que la carpeta models/ esté junto a esta página.'; });
     mv.addEventListener('ar-status', e => {
       if (e.detail.status === 'failed') status.textContent = 'Este navegador no pudo abrir la cámara en AR. Prueba con Chrome en Android o Safari en iPhone.';
