@@ -4,11 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>¿Para comer aquí? · McDonald's AR Combo Experience</title>
-  <meta name="description" content="Un combo low poly estilo PS2 que se sirve en tu mesa, a tamaño real.">
+  <meta name="description" content="Arma un combo low poly estilo PS2 y sírvelo en tu mesa, a tamaño real.">
   <link rel="icon" href="img/icon.png">
   <link rel="preload" href="fonts/space-grotesk-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="modulepreload" href="lib/three-combo.min.js">
   <link rel="stylesheet" href="style.css">
-  <script type="module" src="lib/model-viewer.min.js"></script>
 </head>
 <body>
   <div class="home">
@@ -34,48 +34,47 @@
           <div class="ref" style="bottom:30%"><span class="mono">Marcador · 15 cm</span></div>
         </div>
 
-        <div class="stage">
-          <model-viewer src="models/McDonalds_AR_Combo.glb" poster="img/poster.png"
-            alt="Bandeja low poly con hamburguesa en su caja abierta, papas regadas, bebida, nuggets y un robot-lata con un gato adentro"
-            camera-controls disable-zoom auto-rotate auto-rotate-delay="0" rotation-per-second="10deg" interaction-prompt="none"
-            id="combo" camera-orbit="20deg 62deg 90%" environment-image="neutral" exposure="0.95" tone-mapping="aces"
-            shadow-intensity="0.7" shadow-softness="1" autoplay></model-viewer>
+        <!-- Mismo modelo de las tres experiencias (models/McDonalds_AR_Combo.glb). Cada producto es una malla aparte. -->
+        <div class="stage" id="stage" aria-label="Bandeja 3D. Arrastra para girarla.">
+          <p class="loading mono" id="loading">Preparando la bandeja…</p>
         </div>
       </section>
 
-      <div class="cta">
-        <a class="btn" href="webar.html">Sí, en mi mesa</a>
-        <a class="btn soft" href="data/marcadores_imprimir.pdf" target="_blank">Para llevar: imprimir marcador</a>
+      <div class="hint">
+        <p id="hint">Toca un producto para servirlo en la bandeja.</p>
+        <button class="btn soft" id="all" type="button">Servir todo</button>
       </div>
     </main>
 
     <aside class="aside">
       <section>
-        <h2><i>3</i>Formas de servirlo</h2>
-        <div class="ways">
-          <a class="way" href="webar.html">
-            <span class="disc"><svg viewBox="0 0 34 34" fill="none" stroke="#1E1A17" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="16" height="28" rx="3"/><path d="M17 11l5 3v6l-5 3-5-3v-6z"/><path d="M12 14l5 3 5-3M17 17v6"/></svg></span>
-            <span>En tu mesa<small>WebAR</small></span>
-          </a>
-          <a class="way" href="marcador.html">
-            <span class="disc"><svg viewBox="0 0 34 34" fill="none" stroke="#1E1A17" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="26" height="26"/><rect x="11" y="11" width="12" height="12"/><path d="M14 14v6M17 14h3v3"/></svg></span>
-            <span>Con marcador<small>AR.js</small></span>
-          </a>
+        <h2><i>1</i>Arma tu combo</h2>
+        <div class="menu" role="group" aria-label="Productos">
+          <button class="item" type="button" data-key="burger" aria-pressed="false"><span class="disc"><img src="img/items/burger.png" alt=""></span>Hamburguesa</button>
+          <button class="item" type="button" data-key="fries" aria-pressed="false"><span class="disc"><img src="img/items/fries.png" alt=""></span>Papas</button>
+          <button class="item" type="button" data-key="drink" aria-pressed="false"><span class="disc"><img src="img/items/drink.png" alt=""></span>Bebida</button>
+          <button class="item" type="button" data-key="nuggets" aria-pressed="false"><span class="disc"><img src="img/items/nuggets.png" alt=""></span>Nuggets</button>
         </div>
       </section>
 
-      <!-- Cuando publiquen el Lens: cambien href="#" por el enlace de Snapchat, muevan este <a> a la sección de arriba y borren esta sección -->
-      <section class="off">
-        <h2><i>…</i>Saliendo de cocina</h2>
-        <div class="ways">
-          <a class="way" id="lens-card" href="#" aria-disabled="true">
-            <span class="disc"><svg viewBox="0 0 34 34" fill="none" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><circle cx="17" cy="17" r="12"/><path d="M17 10l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></svg></span>
-            <span>En Snapchat<small>Lens Studio</small></span>
-          </a>
+      <section>
+        <h2><i>2</i>Tu pedido</h2>
+        <div class="ticket" aria-live="polite">
+          <div class="head"><span>Pedido #002</span><span>Para comer aquí</span></div>
+          <ul id="lines">
+            <li><span>Bandeja</span><span>276 △</span></li>
+            <li class="mystery" id="mystery"><span>Juguete sorpresa</span><span>??? △</span></li>
+          </ul>
+          <div class="total"><span>Total <small>· 0 cal</small></span><b><span id="total">276</span> △</b></div>
+        </div>
+        <div class="pay">
+          <a class="btn" href="webar.html">Ponlo en tu mesa</a>
+          <a class="btn line" href="marcador.html">Con marcador</a>
+          <!-- Cuando publiquen el Lens, agreguen aquí: <a class="btn line" href="ENLACE_DE_SNAPCHAT">En Snapchat</a> -->
         </div>
       </section>
 
-      <p class="credit">Proyecto académico, Universidad Icesi, 2026. Concepto no oficial, sin afiliación con McDonald's. La cámara pide permiso y necesita HTTPS.</p>
+      <p class="credit">Proyecto académico, Universidad Icesi, 2026. Concepto no oficial, sin afiliación con McDonald's. Filtro de Snapchat: saliendo de cocina.</p>
     </aside>
 
     <footer class="strip">
@@ -83,9 +82,218 @@
       <span class="mono">Hamburguesa · papas · nuggets · bebida · un gato piloto</span>
     </footer>
   </div>
-  <script>
-    // En pantallas angostas la cámara se aleja para que la bandeja no se corte
-    if (matchMedia('(max-width: 1000px)').matches) document.getElementById('combo').cameraOrbit = '20deg 62deg 108%';
+
+  <script type="module">
+    import { WebGLRenderer, Scene, PerspectiveCamera, PMREMGenerator, DirectionalLight, Mesh, PlaneGeometry, ShadowMaterial,
+      Box3, Vector3, AnimationMixer, LoopRepeat, ACESFilmicToneMapping, PCFShadowMap, MathUtils, Timer,
+      GLTFLoader, OrbitControls, RoomEnvironment } from './lib/three-combo.min.js';
+
+    // Qué malla del .glb corresponde a cada producto, y sus triángulos reales
+    const ITEMS = {
+      burger:  { name: 'Hamburguesa', nodes: ['04_BIGMAC_BOX', '01_BURGER'], tris: 1250 },
+      fries:   { name: 'Papas', nodes: ['02_FRIES'], tris: 180 },
+      drink:   { name: 'Bebida', nodes: ['03_DRINK'], tris: 520 },
+      nuggets: { name: 'Nuggets y ketchup', nodes: ['05_EXTRAS'], tris: 716 },
+    };
+    const TOY = { name: 'Robot y gato piloto', nodes: ['07_TOY', '06_COIN'], tris: 2116 };
+    const TRAY_TRIS = 276;
+
+    const stage = document.getElementById('stage');
+    const loading = document.getElementById('loading');
+    const hint = document.getElementById('hint');
+    const allBtn = document.getElementById('all');
+    const lines = document.getElementById('lines');
+    const mystery = document.getElementById('mystery');
+    const totalEl = document.getElementById('total');
+    const buttons = [...document.querySelectorAll('.item')];
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fmt = n => n.toLocaleString('es-CO');
+
+    // ---------- Escena ----------
+    let renderer;
+    try {
+      renderer = new WebGLRenderer({ antialias: true, alpha: true });
+    } catch (e) { // sin WebGL: se muestra la foto del combo completo
+      loading.remove();
+      stage.insertAdjacentHTML('beforeend', '<img class="fallback" src="img/poster.png" alt="Bandeja low poly con el combo completo">');
+      buttons.forEach(b => b.disabled = true); allBtn.hidden = true;
+      throw e;
+    }
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.toneMapping = ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 0.9;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = PCFShadowMap;
+    stage.appendChild(renderer.domElement);
+
+    const scene = new Scene();
+    scene.environment = new PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+    scene.environmentIntensity = 0.6;
+
+    const sun = new DirectionalLight(0xfff4e6, 1.1);
+    sun.position.set(0.35, 1.2, 0.55);
+    sun.castShadow = true;
+    sun.shadow.mapSize.set(1024, 1024);
+    Object.assign(sun.shadow.camera, { left: -0.4, right: 0.4, top: 0.4, bottom: -0.4, near: 0.1, far: 3 });
+    sun.shadow.bias = -0.0005; sun.shadow.radius = 4;
+    scene.add(sun);
+
+    const ground = new Mesh(new PlaneGeometry(3, 3), new ShadowMaterial({ opacity: 0.16 }));
+    ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true;
+    scene.add(ground);
+
+    const camera = new PerspectiveCamera(30, 1, 0.01, 10);
+    const controls = new OrbitControls(camera, renderer.domElement);
+    Object.assign(controls, { enableZoom: false, enablePan: false, enableDamping: true, dampingFactor: 0.08,
+      minPolarAngle: MathUtils.degToRad(25), maxPolarAngle: MathUtils.degToRad(80) });
+
+    const center = new Vector3();
+    let radius = 0.3;
+    function frame() {
+      const w = stage.clientWidth, h = stage.clientHeight;
+      if (!w || !h) return;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h; camera.updateProjectionMatrix();
+      const vfov = MathUtils.degToRad(camera.fov);
+      const hfov = 2 * Math.atan(Math.tan(vfov / 2) * camera.aspect);
+      const dist = radius / Math.sin(Math.min(vfov, hfov) / 2) * 0.92;
+      const az = MathUtils.degToRad(20), pol = MathUtils.degToRad(62);
+      camera.position.set(center.x + dist * Math.sin(pol) * Math.sin(az), center.y + dist * Math.cos(pol), center.z + dist * Math.sin(pol) * Math.cos(az));
+      controls.target.copy(center); controls.update();
+    }
+    new ResizeObserver(frame).observe(stage);
+
+    // ---------- Caída de cada producto ----------
+    const DROP = 0.28; // metros sobre su lugar
+    const tweens = [];
+    const bounce = t => { // easeOutBounce
+      const n = 7.5625, d = 2.75;
+      if (t < 1 / d) return n * t * t;
+      if (t < 2 / d) return n * (t -= 1.5 / d) * t + 0.75;
+      if (t < 2.5 / d) return n * (t -= 2.25 / d) * t + 0.9375;
+      return n * (t -= 2.625 / d) * t + 0.984375;
+    };
+    function drop(node, delay = 0) {
+      const base = node.userData.baseY;
+      if (reduce) { node.position.y = base; node.visible = true; return; }
+      node.position.y = base + DROP;
+      tweens.push({ node, base, start: performance.now() + delay, dur: 620 });
+    }
+
+    // ---------- Sonido de moneda (solo cuando aparece la sorpresa) ----------
+    let audio = null;
+    function coin() {
+      try { audio ??= new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return; }
+      const t = audio.currentTime;
+      [[988, 0], [1319, 0.08]].forEach(([f, d]) => {
+        const o = audio.createOscillator(), g = audio.createGain();
+        o.type = 'triangle'; o.frequency.value = f;
+        g.gain.setValueAtTime(0.0001, t + d); g.gain.exponentialRampToValueAtTime(0.12, t + d + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + d + (d ? 0.32 : 0.09));
+        o.connect(g).connect(audio.destination); o.start(t + d); o.stop(t + d + 0.4);
+      });
+    }
+
+    // ---------- Pedido ----------
+    const nodes = {};
+    let ready = false, mixer = null, coinAction = null, total = TRAY_TRIS, done = false;
+    const served = new Set();
+    const timers = [];
+    const later = (fn, ms) => timers.push(setTimeout(fn, reduce ? 0 : ms));
+
+    function addLine(name, tris, before) {
+      lines.querySelectorAll('.new').forEach(l => l.classList.remove('new'));
+      const li = document.createElement('li');
+      li.className = 'new';
+      li.innerHTML = `<span></span><span>${fmt(tris)} △</span>`;
+      li.firstChild.textContent = name;
+      lines.insertBefore(li, before);
+      total += tris; totalEl.textContent = fmt(total);
+    }
+
+    function serve(key) {
+      if (!ready || served.has(key)) return;
+      served.add(key);
+      const item = ITEMS[key];
+      item.nodes.forEach((n, i) => drop(nodes[n], i * 180));
+      addLine(item.name, item.tris, mystery);
+      const b = buttons.find(b => b.dataset.key === key);
+      b.setAttribute('aria-pressed', 'true'); b.disabled = true;
+      const left = Object.keys(ITEMS).length - served.size;
+      hint.textContent = left ? `Faltan ${left}. Toca otro producto.` : '¡Sorpresa! Viene con juguete.';
+      if (!left) { allBtn.disabled = true; later(surprise, 750); }
+    }
+
+    function surprise() {
+      drop(nodes['07_TOY']);
+      later(() => {
+        nodes['06_COIN'].visible = true;
+        coinAction?.reset().play();
+        coin();
+      }, 500);
+      mystery.remove();
+      addLine(TOY.name, TOY.tris, null);
+      done = true; allBtn.disabled = false; allBtn.textContent = 'Volver a armar';
+      hint.textContent = 'Combo completo. Ahora ponlo en tu mesa.';
+    }
+
+    function reset() {
+      timers.forEach(clearTimeout); timers.length = 0; tweens.length = 0;
+      served.clear(); done = false; total = TRAY_TRIS; totalEl.textContent = fmt(total);
+      Object.values(ITEMS).concat(TOY).forEach(it => it.nodes.forEach(n => nodes[n].visible = false));
+      coinAction?.stop();
+      [...lines.children].slice(1).forEach(li => li.remove());
+      lines.appendChild(mystery);
+      buttons.forEach(b => { b.setAttribute('aria-pressed', 'false'); b.disabled = false; });
+      allBtn.textContent = 'Servir todo';
+      hint.textContent = 'Toca un producto para servirlo en la bandeja.';
+    }
+
+    buttons.forEach(b => b.addEventListener('click', () => serve(b.dataset.key)));
+    allBtn.addEventListener('click', () => {
+      if (done) return reset();
+      Object.keys(ITEMS).filter(k => !served.has(k)).forEach((k, i) => later(() => serve(k), i * 260));
+    });
+
+    // ---------- Cargar el modelo ----------
+    new GLTFLoader().load('models/McDonalds_AR_Combo.glb', gltf => {
+      const root = gltf.scene;
+      root.traverse(o => {
+        if (!o.isMesh) return;
+        o.castShadow = true;
+        o.receiveShadow = o.name === '00_TRAY' || o.name === '05_EXTRAS';
+      });
+      scene.add(root);
+      const box = new Box3().setFromObject(root);
+      box.getCenter(center); radius = box.getSize(new Vector3()).length() / 2;
+      center.y -= 0.02;
+      ground.position.y = box.min.y;
+      root.traverse(o => { if (/^0[1-7]_/.test(o.name)) { o.userData.baseY = o.position.y; o.visible = false; nodes[o.name] = o; } });
+      if (gltf.animations.length) {
+        mixer = new AnimationMixer(root);
+        coinAction = mixer.clipAction(gltf.animations[0]); coinAction.setLoop(LoopRepeat, Infinity);
+      }
+      ready = true;
+      loading.remove();
+      frame();
+    }, undefined, () => { loading.textContent = 'No se pudo cargar el modelo.'; });
+
+    const timer = new Timer();
+    renderer.setAnimationLoop(() => {
+      timer.update();
+      const now = performance.now();
+      for (let i = tweens.length - 1; i >= 0; i--) {
+        const tw = tweens[i];
+        if (now < tw.start) continue;
+        tw.node.visible = true;
+        const t = Math.min((now - tw.start) / tw.dur, 1);
+        tw.node.position.y = tw.base + DROP * (1 - bounce(t));
+        if (t === 1) tweens.splice(i, 1);
+      }
+      mixer?.update(timer.getDelta());
+      controls.update();
+      renderer.render(scene, camera);
+    });
   </script>
 </body>
 </html>
